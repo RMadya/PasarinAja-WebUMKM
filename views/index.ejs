@@ -1,0 +1,772 @@
+<%- include('partials/head', { appName: appName }) %>
+<body class="bg-krem text-tinta font-sans">
+
+<div class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-64 bg-hijau text-white p-6 flex flex-col md:min-h-screen">
+
+        <div class="mb-10">
+            <h1 class="text-2xl font-extrabold tracking-wide">
+                PASEBAN KAWIS
+            </h1>
+            <p class="text-sm text-green-100 mt-1">Produk UMKM Desa</p>
+        </div>
+
+        <nav class="flex flex-col gap-3" id="sidebarMenu">
+
+            <button onclick="tampilkanHalaman('dashboard')"
+                data-halaman="dashboard"
+                class="menu-link text-left px-4 py-3 rounded-lg hover:bg-hijau-muda transition">
+                Dashboard
+            </button>
+
+            <button onclick="tampilkanHalaman('katalog')"
+                data-halaman="katalog"
+                class="menu-link text-left px-4 py-3 rounded-lg bg-hijau-muda font-semibold transition">
+                E-Katalog
+            </button>
+
+            <button onclick="tampilkanHalaman('tambah-produk')"
+                data-halaman="tambah-produk"
+                class="menu-link text-left px-4 py-3 rounded-lg hover:bg-hijau-muda transition flex items-center justify-between">
+                <span>Tambah Produk</span>
+                <span class="text-xs bg-oranye text-white px-2 py-0.5 rounded-full font-bold">Baru</span>
+            </button>
+
+            <button onclick="tampilkanHalaman('chatbot')"
+                data-halaman="chatbot"
+                class="menu-link text-left px-4 py-3 rounded-lg hover:bg-hijau-muda transition">
+                Chatbot AI
+            </button>
+
+        </nav>
+
+        <div class="mt-8 md:mt-auto">
+            <button onclick="tampilkanHalaman('akun')"
+                data-halaman="akun"
+                class="menu-link w-full text-left px-4 py-3 rounded-lg hover:bg-hijau-muda transition">
+                Akun Saya
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- KONTEN UTAMA -->
+    <main class="flex-1 p-6 md:p-10 min-w-0">
+
+        <!-- HALAMAN DASHBOARD -->
+        <section id="dashboard" class="halaman hidden">
+
+            <h2 class="text-3xl font-bold mb-2">Dashboard</h2>
+
+            <p class="text-gray-500 mb-8">
+                Selamat datang kembali!!
+            </p>
+
+            <div class="bg-hijau text-white rounded-2xl p-8 mb-8 shadow-sm">
+                <h3 class="text-2xl font-bold mb-3">
+                    Kelola Usaha & Produk Lebih Mudah
+                </h3>
+
+                <p class="text-green-100">
+                    Promosikan produk dan kembangkan UMKM Desa Paseban Kawis secara digital dengan database terintegrasi!
+                </p>
+            </div>
+
+            <h3 class="text-xl font-bold mb-5">Menu Utama</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                <button onclick="tampilkanHalaman('katalog')"
+                    class="text-left bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100">
+                    <div class="text-3xl mb-3">🛍️</div>
+                    <h4 class="text-xl font-bold text-hijau mb-2">E-Katalog</h4>
+                    <p class="text-gray-500 mb-4 text-sm">Lihat semua produk UMKM yang tersimpan di PostgreSQL.</p>
+                    <span class="text-hijau font-semibold text-sm">Lihat Produk →</span>
+                </button>
+
+                <button onclick="tampilkanHalaman('tambah-produk')"
+                    class="text-left bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100">
+                    <div class="text-3xl mb-3">➕</div>
+                    <h4 class="text-xl font-bold text-hijau mb-2">Tambah Produk</h4>
+                    <p class="text-gray-500 mb-4 text-sm">Tambahkan produk baru langsung ke database.</p>
+                    <span class="text-hijau font-semibold text-sm">Buka Form →</span>
+                </button>
+
+                <button onclick="tampilkanHalaman('chatbot')"
+                    class="text-left bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100">
+                    <div class="text-3xl mb-3">🤖</div>
+                    <h4 class="text-xl font-bold text-hijau mb-2">Chatbot AI</h4>
+                    <p class="text-gray-500 mb-4 text-sm">Tanya AI seputar strategi promosi & tips usaha.</p>
+                    <span class="text-hijau font-semibold text-sm">Mulai Chat →</span>
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- HALAMAN E-KATALOG -->
+        <section id="katalog" class="halaman">
+
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
+                <div>
+                    <h2 class="text-3xl font-bold">E-Katalog Produk</h2>
+                    <p class="text-gray-500 mt-1">Daftar produk UMKM Desa Paseban Kawis (Terkoneksi ke PostgreSQL)</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="muatProduk()"
+                        class="px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-xl transition flex items-center gap-2 shadow-sm">
+                        <span>🔄</span> Segarkan
+                    </button>
+                    <button onclick="tampilkanHalaman('tambah-produk')"
+                        class="px-4 py-2.5 bg-hijau hover:bg-hijau-muda text-white text-sm font-semibold rounded-xl transition flex items-center gap-2 shadow-sm">
+                        <span>➕</span> Tambah Produk
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATUS SERVER & DATABASE -->
+            <div class="flex items-center gap-2 mb-6 mt-4 text-sm bg-white border border-gray-200 px-4 py-2.5 rounded-xl w-fit">
+                <span id="status-dot" class="w-3 h-3 rounded-full bg-gray-400"></span>
+                <span id="status-label" class="font-medium text-gray-700">Memeriksa koneksi database...</span>
+            </div>
+
+            <!-- PENCARIAN -->
+            <div class="mb-8">
+                <input
+                    type="text"
+                    id="searchProduk"
+                    placeholder="Cari produk berdasarkan nama, deskripsi, atau UMKM....."
+                    class="w-full px-5 py-4 rounded-xl bg-white border border-gray-200 outline-none focus:ring-2 focus:ring-hijau shadow-sm transition">
+            </div>
+
+            <!-- DAFTAR PRODUK (Direncanakan & Dirender secara Dinamis via DOM Manipulation) -->
+            <div id="daftarProduk" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <% if (produk && produk.length > 0) { %>
+                    <% produk.forEach(function(item) { %>
+                        <article class="produk-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between" data-id="<%= item.id %>">
+                            <div>
+                                <div class="w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden mb-4">
+                                    <div class="text-center text-gray-400">
+                                        <span class="text-5xl">🛍️</span>
+                                        <p class="mt-2 text-xs">Produk UMKM</p>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <span class="text-xs font-semibold px-2.5 py-1 bg-green-50 text-hijau rounded-md inline-block">
+                                        <%= item.kategori %>
+                                    </span>
+
+                                    <h3 class="nama-produk text-lg font-bold mt-2 text-gray-800 line-clamp-1">
+                                        <%= item.nama %>
+                                    </h3>
+
+                                    <p class="deskripsi-produk text-gray-500 text-sm mt-1.5 line-clamp-2">
+                                        <%= item.deskripsi || 'Tidak ada deskripsi' %>
+                                    </p>
+
+                                    <p class="text-xs text-gray-500 mt-2 font-medium">
+                                        🏪 <%= item.umkm || 'UMKM Lokal' %>
+                                    </p>
+
+                                    <p class="text-lg font-extrabold text-hijau mt-3">
+                                        Rp <%= Number(item.harga).toLocaleString('id-ID') %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="tombol-detail w-full bg-hijau text-white py-2.5 rounded-xl font-semibold hover:bg-hijau-muda transition text-sm mt-2"
+                                data-nama="<%= item.nama %>"
+                                data-kategori="<%= item.kategori %>"
+                                data-harga="<%= Number(item.harga).toLocaleString('id-ID') %>"
+                                data-deskripsi="<%= item.deskripsi || '-' %>"
+                                data-umkm="<%= item.umkm || '-' %>">
+                                Lihat Detail
+                            </button>
+                        </article>
+                    <% }); %>
+                <% } %>
+
+            </div>
+
+            <p id="pesanKosong" class="<%= (produk && produk.length > 0) ? 'hidden' : '' %> text-center text-gray-500 py-16 bg-white rounded-2xl mt-4 border border-dashed border-gray-200">
+                Belum ada produk yang tersedia. Silakan klik tombol <strong>Tambah Produk</strong> untuk memasukkan produk baru.
+            </p>
+
+        </section>
+
+        <!-- HALAMAN FORM TAMBAH PRODUK (TERHUBUNG KE POST /api/produk) -->
+        <section id="tambah-produk" class="halaman hidden">
+
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold">Tambah Produk Baru</h2>
+                <p class="text-gray-500 mt-1">
+                    Form input untuk menambahkan data produk baru langsung ke database PostgreSQL melalui endpoint <code>POST /api/produk</code>
+                </p>
+            </div>
+
+            <form id="formTambahProduk"
+                class="bg-white rounded-2xl p-6 md:p-8 shadow-sm space-y-6 max-w-3xl border border-gray-100">
+
+                <div>
+                    <label for="inputNama" class="block font-semibold mb-2 text-gray-700">
+                        Nama Produk <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        id="inputNama"
+                        type="text"
+                        placeholder="Contoh: Keripik Singkong Original"
+                        required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-hijau transition">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="inputKategori" class="block font-semibold mb-2 text-gray-700">
+                            Kategori Produk <span class="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="inputKategori"
+                            required
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 bg-white outline-none focus:ring-2 focus:ring-hijau transition">
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="Makanan & Minuman">Makanan & Minuman</option>
+                            <option value="Kerajinan">Kerajinan</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Pertanian">Pertanian</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="inputHarga" class="block font-semibold mb-2 text-gray-700">
+                            Harga (Rp) <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            id="inputHarga"
+                            type="number"
+                            min="0"
+                            step="500"
+                            placeholder="Contoh: 15000"
+                            required
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-hijau transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="inputUmkm" class="block font-semibold mb-2 text-gray-700">
+                        Nama UMKM / Pemilik Usaha <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        id="inputUmkm"
+                        type="text"
+                        placeholder="Contoh: Keripik Singkong Bu Sari"
+                        required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-hijau transition">
+                </div>
+
+                <div>
+                    <label for="inputDeskripsi" class="block font-semibold mb-2 text-gray-700">
+                        Deskripsi Produk
+                    </label>
+                    <textarea
+                        id="inputDeskripsi"
+                        rows="3"
+                        placeholder="Tuliskan deskripsi ringkas mengenai produk, kemasan, atau keunggulannya..."
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-hijau transition"></textarea>
+                </div>
+
+                <!-- Notifikasi / Feedback Form -->
+                <div id="pesanForm" class="hidden p-4 rounded-xl text-sm font-medium"></div>
+
+                <div class="flex items-center gap-4 pt-2">
+                    <button
+                        type="submit"
+                        id="btnSimpan"
+                        class="flex-1 bg-hijau text-white py-3.5 rounded-xl font-bold hover:bg-hijau-muda transition flex items-center justify-center gap-2 shadow-sm">
+                        <span>💾 Simpan Produk ke Database</span>
+                    </button>
+                    <button
+                        type="button"
+                        onclick="tampilkanHalaman('katalog')"
+                        class="px-6 py-3.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- HALAMAN CHATBOT AI -->
+        <section id="chatbot" class="halaman hidden">
+
+            <h2 class="text-3xl font-bold mb-2">Chatbot AI</h2>
+
+            <p class="text-gray-500 mb-8">
+                Asisten pintar yang siap membantu usaha UMKM Anda!
+            </p>
+
+            <div class="bg-white rounded-2xl shadow-sm p-6 min-h-[500px] flex flex-col border border-gray-100">
+
+                <div id="areaChat" class="flex-1 space-y-5 overflow-y-auto">
+
+                    <div class="bg-krem rounded-xl p-5 max-w-xl">
+                        <p class="font-semibold text-hijau mb-2">Asisten AI</p>
+                        <p>
+                            Halo! Ada yang bisa saya bantu untuk mengembangkan usahamu hari ini?
+                        </p>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button"
+                            onclick="isiPertanyaan('Bagaimana cara promosi produk?')"
+                            class="bg-gray-100 border border-gray-200 rounded-xl p-4 text-left hover:bg-gray-200 text-sm">
+                            Bagaimana cara promosi produk UMKM secara online?
+                        </button>
+                    </div>
+
+                </div>
+
+                <form id="formChat" class="flex gap-3 mt-8">
+
+                    <input
+                        type="text"
+                        id="inputChat"
+                        placeholder="Tulis pertanyaanmu....."
+                        required
+                        class="flex-1 min-w-0 border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-hijau">
+
+                    <button
+                        type="submit"
+                        class="bg-hijau text-white px-6 rounded-xl font-semibold hover:bg-hijau-muda">
+                        Kirim
+                    </button>
+
+                </form>
+
+                <p class="text-xs text-gray-400 mt-3">
+                    Demo tampilan chatbot. Belum terhubung dengan layanan AI pihak ketiga.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- HALAMAN AKUN SAYA -->
+        <section id="akun" class="halaman hidden">
+
+            <h2 class="text-3xl font-bold mb-2">Akun Saya</h2>
+
+            <p class="text-gray-500 mb-8">
+                Kelola informasi akun Anda
+            </p>
+
+            <section class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+
+                <div class="flex flex-col sm:flex-row items-center gap-5 mb-8">
+
+                    <div class="w-24 h-24 rounded-full bg-hijau text-white flex items-center justify-center text-4xl font-bold">
+                        P
+                    </div>
+
+                    <div class="text-center sm:text-left">
+                        <h3 class="text-2xl font-bold">Pengelola UMKM</h3>
+                        <p class="text-gray-500">Desa Paseban Kawis</p>
+                    </div>
+
+                </div>
+
+                <div class="border-t pt-6">
+
+                    <h3 class="text-xl font-bold mb-6">Informasi Akun</h3>
+
+                    <div class="space-y-5 max-w-xl">
+
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Nama Lengkap</p>
+                            <input
+                                id="akunNama"
+                                type="text"
+                                value="Pengelola Desa Paseban Kawis"
+                                disabled
+                                class="w-full bg-gray-50 border rounded-lg px-4 py-3 font-semibold text-gray-700">
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Status Database</p>
+                            <input
+                                type="text"
+                                value="PostgreSQL 18 (PasarinAja)"
+                                disabled
+                                class="w-full bg-gray-50 border rounded-lg px-4 py-3 font-semibold text-gray-700">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<!-- MODAL DETAIL PRODUK -->
+<div id="modalDetail"
+    class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+
+    <div class="bg-white rounded-2xl p-7 max-w-lg w-full shadow-2xl">
+
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-xl font-bold text-gray-800">Detail Produk</h3>
+
+            <button id="tutupModal"
+                type="button"
+                class="text-2xl text-gray-400 hover:text-red-500 transition">
+                &times;
+            </button>
+        </div>
+
+        <span class="text-xs font-semibold px-2.5 py-1 bg-green-50 text-hijau rounded-md inline-block" id="detailKategori"></span>
+
+        <h4 class="text-2xl font-bold mt-3 text-gray-800" id="detailNama"></h4>
+
+        <p class="text-gray-600 mt-3 text-sm leading-relaxed" id="detailDeskripsi"></p>
+
+        <div class="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-400">Nama UMKM</p>
+                <p class="text-sm font-semibold text-gray-700 mt-0.5" id="detailUmkm"></p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-gray-400">Harga</p>
+                <p class="text-xl font-bold text-hijau mt-0.5" id="detailHarga"></p>
+            </div>
+        </div>
+
+        <button id="tutupModalBawah"
+            type="button"
+            class="w-full bg-hijau text-white py-3 rounded-xl mt-6 font-semibold hover:bg-hijau-muda transition">
+            Tutup
+        </button>
+    </div>
+</div>
+
+<!-- JAVASCRIPT: DOM MANIPULATION & FETCH API -->
+<script>
+
+// 1. PINDAH HALAMAN / TAB
+function tampilkanHalaman(id) {
+    document.querySelectorAll('.halaman').forEach(halaman => {
+        halaman.classList.add('hidden');
+    });
+
+    const halamanTujuan = document.getElementById(id);
+    if (halamanTujuan) {
+        halamanTujuan.classList.remove('hidden');
+    }
+
+    // Mengubah menu aktif pada sidebar
+    document.querySelectorAll('.menu-link').forEach(menu => {
+        menu.classList.remove('bg-hijau-muda', 'font-semibold');
+        if (menu.dataset.halaman === id) {
+            menu.classList.add('bg-hijau-muda', 'font-semibold');
+        }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 2. FORMAT RUPIAH & ESCAPE HTML
+function formatRupiah(angka) {
+    return 'Rp ' + Number(angka).toLocaleString('id-ID');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// 3. FUNGSI MEMBUAT ELEMEN KARTU PRODUK (DOM MANIPULATION)
+function buatCardElement(item) {
+    const card = document.createElement('article');
+    card.className = 'produk-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between transition hover:shadow-md';
+    card.dataset.id = item.id;
+
+    card.innerHTML = `
+        <div>
+            <div class="w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden mb-4">
+                <div class="text-center text-gray-400">
+                    <span class="text-5xl">🛍️</span>
+                    <p class="mt-2 text-xs">Produk UMKM</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <span class="text-xs font-semibold px-2.5 py-1 bg-green-50 text-hijau rounded-md inline-block">
+                    ${escapeHtml(item.kategori || 'Umum')}
+                </span>
+
+                <h3 class="nama-produk text-lg font-bold mt-2 text-gray-800 line-clamp-1">
+                    ${escapeHtml(item.nama || '')}
+                </h3>
+
+                <p class="deskripsi-produk text-gray-500 text-sm mt-1.5 line-clamp-2">
+                    ${escapeHtml(item.deskripsi || 'Tidak ada deskripsi')}
+                </p>
+
+                <p class="text-xs text-gray-500 mt-2 font-medium">
+                    🏪 ${escapeHtml(item.umkm || 'UMKM Lokal')}
+                </p>
+
+                <p class="text-lg font-extrabold text-hijau mt-3">
+                    ${formatRupiah(item.harga || 0)}
+                </p>
+            </div>
+        </div>
+
+        <button
+            type="button"
+            class="tombol-detail w-full bg-hijau text-white py-2.5 rounded-xl font-semibold hover:bg-hijau-muda transition text-sm mt-2">
+            Lihat Detail
+        </button>
+    `;
+
+    // Pasang listener pada tombol detail
+    const btnDetail = card.querySelector('.tombol-detail');
+    btnDetail.addEventListener('click', () => {
+        bukaModalDetail(item);
+    });
+
+    return card;
+}
+
+// 4. FUNGSI MENGAMBIL DATA DARI BACKEND (GET /api/produk) & RENDER DOM DINAMIS
+async function muatProduk() {
+    const container = document.getElementById('daftarProduk');
+    const pesanKosong = document.getElementById('pesanKosong');
+
+    try {
+        const response = await fetch('/api/produk');
+        if (!response.ok) throw new Error('Gagal memuat produk dari server');
+        const data = await response.json();
+
+        container.innerHTML = ''; // Bersihkan container sebelum render ulang
+
+        if (!data || data.length === 0) {
+            pesanKosong.textContent = 'Belum ada produk yang tersedia. Silakan klik tombol Tambah Produk.';
+            pesanKosong.classList.remove('hidden');
+            return;
+        }
+
+        pesanKosong.classList.add('hidden');
+        data.forEach(item => {
+            container.appendChild(buatCardElement(item));
+        });
+    } catch (err) {
+        console.error('Error muat produk:', err);
+    }
+}
+
+// 5. FUNGSI SUBMIT FORM & TAMBAH KE DATABASE (POST /api/produk) TANPA RELOAD
+const formTambah = document.getElementById('formTambahProduk');
+formTambah.addEventListener('submit', async function(event) {
+    event.preventDefault(); // Mencegah reload halaman
+
+    const pesan = document.getElementById('pesanForm');
+    const btnSimpan = document.getElementById('btnSimpan');
+
+    const nama = document.getElementById('inputNama').value.trim();
+    const kategori = document.getElementById('inputKategori').value;
+    const harga = document.getElementById('inputHarga').value;
+    const umkm = document.getElementById('inputUmkm').value.trim();
+    const deskripsi = document.getElementById('inputDeskripsi').value.trim();
+
+    // Validasi client-side
+    if (!nama || !kategori || !harga || !umkm) {
+        pesan.className = 'p-4 rounded-xl text-sm font-medium bg-red-100 text-red-700 block';
+        pesan.textContent = 'Semua field dengan tanda * wajib diisi!';
+        return;
+    }
+
+    btnSimpan.disabled = true;
+    btnSimpan.innerHTML = '<span>Menyimpan ke Database...</span>';
+
+    try {
+        const response = await fetch('/api/produk', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nama: nama,
+                kategori: kategori,
+                harga: Number(harga),
+                umkm: umkm,
+                deskripsi: deskripsi
+            })
+        });
+
+        const dataBaru = await response.json();
+
+        if (!response.ok) {
+            throw new Error(dataBaru.error || 'Gagal menyimpan produk ke database');
+        }
+
+        // === DOM MANIPULATION LANGSUNG TANPA RELOAD ===
+        const container = document.getElementById('daftarProduk');
+        const pesanKosong = document.getElementById('pesanKosong');
+        pesanKosong.classList.add('hidden');
+
+        // Buat elemen kartu baru dan sisipkan ke posisi paling atas
+        const kartuBaru = buatCardElement(dataBaru);
+        kartuBaru.classList.add('ring-2', 'ring-hijau'); // Efek sorotan visual
+        container.prepend(kartuBaru);
+
+        // Tampilkan pesan sukses
+        pesan.className = 'p-4 rounded-xl text-sm font-medium bg-green-100 text-green-700 block';
+        pesan.textContent = `✅ Berhasil! Produk "${dataBaru.nama}" tersimpan di PostgreSQL dan langsung muncul di katalog.`;
+
+        // Reset form
+        formTambah.reset();
+
+        // Alihkan otomatis ke katalog setelah jeda singkat
+        setTimeout(() => {
+            tampilkanHalaman('katalog');
+            pesan.classList.add('hidden');
+            kartuBaru.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                kartuBaru.classList.remove('ring-2', 'ring-hijau');
+            }, 2500);
+        }, 1200);
+
+    } catch (err) {
+        pesan.className = 'p-4 rounded-xl text-sm font-medium bg-red-100 text-red-700 block';
+        pesan.textContent = '❌ Gagal: ' + err.message;
+    } finally {
+        btnSimpan.disabled = false;
+        btnSimpan.innerHTML = '<span>💾 Simpan Produk ke Database</span>';
+    }
+});
+
+// 6. CEK STATUS KONEKSI SERVER & DATABASE
+fetch('/api/status')
+    .then(response => {
+        if (!response.ok) throw new Error('Server error');
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('status-dot').classList.replace('bg-gray-400', 'bg-green-500');
+        document.getElementById('status-label').textContent = 'Server & PostgreSQL Terhubung';
+    })
+    .catch(() => {
+        document.getElementById('status-dot').classList.replace('bg-gray-400', 'bg-red-500');
+        document.getElementById('status-label').textContent = 'Server Tidak Terhubung';
+    });
+
+// 7. PENCARIAN REALTIME PADA DAFTAR PRODUK (DOM MANIPULATION)
+const searchProduk = document.getElementById('searchProduk');
+searchProduk.addEventListener('input', function() {
+    const keyword = this.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('#daftarProduk .produk-card');
+    let jumlahTampil = 0;
+
+    cards.forEach(card => {
+        const nama = card.querySelector('.nama-produk')?.textContent.toLowerCase() || '';
+        const deskripsi = card.querySelector('.deskripsi-produk')?.textContent.toLowerCase() || '';
+        if (nama.includes(keyword) || deskripsi.includes(keyword)) {
+            card.classList.remove('hidden');
+            jumlahTampil++;
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+
+    const pesanKosong = document.getElementById('pesanKosong');
+    if (jumlahTampil === 0) {
+        pesanKosong.textContent = 'Tidak ada produk yang cocok dengan pencarian Anda.';
+        pesanKosong.classList.remove('hidden');
+    } else {
+        pesanKosong.classList.add('hidden');
+    }
+});
+
+// 8. MODAL DETAIL PRODUK
+const modalDetail = document.getElementById('modalDetail');
+
+function bukaModalDetail(item) {
+    document.getElementById('detailNama').textContent = item.nama;
+    document.getElementById('detailKategori').textContent = item.kategori;
+    document.getElementById('detailHarga').textContent = formatRupiah(item.harga);
+    document.getElementById('detailDeskripsi').textContent = item.deskripsi || '-';
+    document.getElementById('detailUmkm').textContent = item.umkm || '-';
+
+    modalDetail.classList.remove('hidden');
+    modalDetail.classList.add('flex');
+}
+
+function tutupDetail() {
+    modalDetail.classList.add('hidden');
+    modalDetail.classList.remove('flex');
+}
+
+document.getElementById('tutupModal').addEventListener('click', tutupDetail);
+document.getElementById('tutupModalBawah').addEventListener('click', tutupDetail);
+
+// Pasang handler untuk kartu-kartu yang sudah di-render oleh server (SSR)
+document.querySelectorAll('.produk-card').forEach(card => {
+    const btn = card.querySelector('.tombol-detail');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            bukaModalDetail({
+                nama: this.dataset.nama,
+                kategori: this.dataset.kategori,
+                harga: this.dataset.harga,
+                deskripsi: this.dataset.deskripsi,
+                umkm: this.dataset.umkm,
+            });
+        });
+    }
+});
+
+// 9. CHATBOT DEMO
+function isiPertanyaan(teks) {
+    document.getElementById('inputChat').value = teks;
+}
+
+document.getElementById('formChat').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const input = document.getElementById('inputChat');
+    const areaChat = document.getElementById('areaChat');
+    const pertanyaan = input.value.trim();
+
+    if (!pertanyaan) return;
+
+    const pesanPengguna = document.createElement('div');
+    pesanPengguna.className = 'flex justify-end';
+    pesanPengguna.innerHTML = `
+        <div class="bg-hijau text-white rounded-xl p-4 max-w-sm text-sm">
+            ${escapeHtml(pertanyaan)}
+        </div>
+    `;
+    areaChat.appendChild(pesanPengguna);
+
+    const jawaban = document.createElement('div');
+    jawaban.className = 'bg-krem rounded-xl p-5 max-w-xl mt-4 text-sm';
+    jawaban.innerHTML = `
+        <p class="font-semibold text-hijau mb-2">Asisten AI</p>
+        <p>Terima kasih atas pertanyaannya! Untuk memasarkan produk UMKM, pastikan informasi nama, deskripsi rasa/kualitas, dan harga tercantum jelas di katalog PasarinAja agar menarik minat calon pembeli.</p>
+    `;
+    areaChat.appendChild(jawaban);
+
+    input.value = '';
+    areaChat.scrollTop = areaChat.scrollHeight;
+});
+</script>
+
+<%- include('partials/footer') %>

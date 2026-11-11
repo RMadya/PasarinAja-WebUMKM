@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PasarinAja - Katalog & Tambah Produk (DOM Manipulation)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hijau: '#245C45',
+                        'hijau-muda': '#34795B',
+                        krem: '#F3F5ED'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-krem text-gray-800 min-h-screen py-10 px-4 md:px-8">
+
+    <div class="max-w-6xl mx-auto space-y-8">
+
+        <!-- HEADER -->
+        <header class="bg-hijau text-white rounded-2xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-wide">PASEBAN KAWIS - PasarinAja</h1>
+                <p class="text-green-100 mt-1">Platform Katalog UMKM Terintegrasi PostgreSQL</p>
+            </div>
+            <button onclick="muatProduk()" class="px-5 py-2.5 bg-white text-hijau hover:bg-green-50 font-bold rounded-xl transition text-sm flex items-center gap-2 shadow-sm">
+                <span>🔄</span> Segarkan Produk
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- FORM INPUT TAMBAH PRODUK BARU -->
+            <section class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
+                <h2 class="text-xl font-bold text-hijau mb-1 flex items-center gap-2">
+                    <span>➕</span> Tambah Produk Baru
+                </h2>
+                <p class="text-xs text-gray-500 mb-6">Kirim data ke <code>POST /api/produk</code> via fetch</p>
+
+                <form id="formTambahProduk" class="space-y-4">
+                    <div>
+                        <label for="nama" class="block text-xs font-bold text-gray-600 mb-1">Nama Produk *</label>
+                        <input type="text" id="nama" placeholder="Contoh: Keripik Singkong" required
+                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-hijau transition">
+                    </div>
+
+                    <div>
+                        <label for="kategori" class="block text-xs font-bold text-gray-600 mb-1">Kategori *</label>
+                        <select id="kategori" required
+                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm bg-white outline-none focus:ring-2 focus:ring-hijau transition">
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="Makanan & Minuman">Makanan & Minuman</option>
+                            <option value="Kerajinan">Kerajinan</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Pertanian">Pertanian</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="harga" class="block text-xs font-bold text-gray-600 mb-1">Harga (Rp) *</label>
+                        <input type="number" id="harga" min="0" placeholder="Contoh: 15000" required
+                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-hijau transition">
+                    </div>
+
+                    <div>
+                        <label for="umkm" class="block text-xs font-bold text-gray-600 mb-1">Nama UMKM / Toko *</label>
+                        <input type="text" id="umkm" placeholder="Contoh: Bu Sari Jaya" required
+                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-hijau transition">
+                    </div>
+
+                    <div>
+                        <label for="deskripsi" class="block text-xs font-bold text-gray-600 mb-1">Deskripsi Produk</label>
+                        <textarea id="deskripsi" rows="3" placeholder="Keterangan singkat produk..."
+                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-hijau transition"></textarea>
+                    </div>
+
+                    <div id="pesanForm" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+
+                    <button type="submit" id="btnSubmit"
+                        class="w-full bg-hijau hover:bg-hijau-muda text-white font-bold py-3 rounded-xl transition shadow-sm text-sm flex items-center justify-center gap-2">
+                        <span>Simpan Produk (POST)</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- DAFTAR PRODUK DINAMIS (DOM MANIPULATION) -->
+            <section class="lg:col-span-2 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <span>🛍️</span> Daftar Produk (Data Realtime)
+                    </h2>
+                    <span id="totalProdukBadge" class="text-xs bg-gray-200 text-gray-700 font-bold px-3 py-1 rounded-full">
+                        Memuat...
+                    </span>
+                </div>
+
+                <!-- Container tempat kartu produk di-render secara dinamis -->
+                <div id="containerProduk" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Kartu produk akan disisipkan di sini oleh JavaScript -->
+                </div>
+
+                <div id="pesanKosong" class="hidden text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-500 text-sm">
+                    Belum ada data produk di database. Silakan isi form di samping untuk menambahkan produk pertama!
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT: FETCH API & DOM MANIPULATION -->
+    <script>
+        const API_URL = '/api/produk';
+
+        // Utility: Format angka ke Rupiah
+        function formatRupiah(angka) {
+            return 'Rp ' + Number(angka).toLocaleString('id-ID');
+        }
+
+        // Utility: Sanitasi teks untuk mencegah XSS
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // =========================================================================
+        // 1. FUNGSI MEMBUAT ELEMEN HTML KARTU PRODUK (DOM MANIPULATION)
+        // =========================================================================
+        function buatCardProduk(item) {
+            const card = document.createElement('article');
+            card.className = 'bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between transition hover:shadow-md';
+            card.dataset.id = item.id;
+
+            card.innerHTML = `
+                <div>
+                    <div class="w-full h-36 bg-gray-100 rounded-xl flex items-center justify-center text-4xl mb-3">
+                        🛍️
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-green-50 text-hijau rounded-md inline-block">
+                        ${escapeHtml(item.kategori || 'Umum')}
+                    </span>
+                    <h3 class="font-bold text-base mt-2 text-gray-800 line-clamp-1">
+                        ${escapeHtml(item.nama || '')}
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">
+                        ${escapeHtml(item.deskripsi || 'Tidak ada deskripsi')}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2 font-medium">
+                        🏪 ${escapeHtml(item.umkm || 'UMKM Lokal')}
+                    </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                    <span class="font-extrabold text-hijau text-base">
+                        ${formatRupiah(item.harga || 0)}
+                    </span>
+                    <span class="text-[11px] text-gray-400">
+                        ID: #${item.id}
+                    </span>
+                </div>
+            `;
+            return card;
+        }
+
+        // =========================================================================
+        // 2. FUNGSI FETCH PRODUK DARI BACKEND (GET /api/produk) & DOM MANIPULATION
+        // =========================================================================
+        async function muatProduk() {
+            const container = document.getElementById('containerProduk');
+            const pesanKosong = document.getElementById('pesanKosong');
+            const badge = document.getElementById('totalProdukBadge');
+
+            badge.textContent = 'Memuat...';
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Gagal mengambil data dari server');
+
+                const data = await response.json();
+
+                // Bersihkan konten kontainer produk sebelum render
+                container.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    pesanKosong.classList.remove('hidden');
+                    badge.textContent = '0 Produk';
+                    return;
+                }
+
+                pesanKosong.classList.add('hidden');
+                badge.textContent = `${data.length} Produk`;
+
+                // Render setiap produk ke dalam DOM
+                data.forEach(item => {
+                    const card = buatCardProduk(item);
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error('Error saat fetch produk:', err);
+                badge.textContent = 'Gagal';
+                container.innerHTML = `
+                    <div class="col-span-2 p-4 bg-red-50 text-red-700 text-sm rounded-xl">
+                        ❌ Gagal memuat produk: ${err.message}. Pastikan server backend sedang berjalan.
+                    </div>
+                `;
+            }
+        }
+
+        // =========================================================================
+        // 3. FUNGSI SUBMIT FORM & TAMBAH KE DATABASE (POST /api/produk) TANPA RELOAD
+        // =========================================================================
+        const form = document.getElementById('formTambahProduk');
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah reload halaman standar browser
+
+            const btn = document.getElementById('btnSubmit');
+            const pesan = document.getElementById('pesanForm');
+
+            const payload = {
+                nama: document.getElementById('nama').value.trim(),
+                kategori: document.getElementById('kategori').value,
+                harga: Number(document.getElementById('harga').value),
+                umkm: document.getElementById('umkm').value.trim(),
+                deskripsi: document.getElementById('deskripsi').value.trim()
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = '<span>Menyimpan ke Database...</span>';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const dataBaru = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(dataBaru.error || 'Terjadi kesalahan saat menyimpan produk');
+                }
+
+                // === DOM MANIPULATION: LANGSUNG SISIPKAN KARTU BARU KE DOM ===
+                const container = document.getElementById('containerProduk');
+                const pesanKosong = document.getElementById('pesanKosong');
+                pesanKosong.classList.add('hidden');
+
+                const cardBaru = buatCardProduk(dataBaru);
+                // Tambahkan efek highlight hijau pada kartu baru
+                cardBaru.classList.add('ring-2', 'ring-hijau');
+                container.prepend(cardBaru); // Sisipkan ke urutan paling atas
+
+                // Update badge jumlah produk
+                const totalCards = container.querySelectorAll('article').length;
+                document.getElementById('totalProdukBadge').textContent = `${totalCards} Produk`;
+
+                // Tampilkan notifikasi sukses
+                pesan.className = 'p-3 rounded-xl text-xs font-medium bg-green-100 text-green-700 block';
+                pesan.textContent = `✅ Berhasil! Produk "${dataBaru.nama}" berhasil ditambahkan ke database!`;
+
+                // Reset form input
+                form.reset();
+
+                // Hapus efek highlight setelah 2 detik
+                setTimeout(() => {
+                    cardBaru.classList.remove('ring-2', 'ring-hijau');
+                }, 2000);
+
+            } catch (err) {
+                pesan.className = 'p-3 rounded-xl text-xs font-medium bg-red-100 text-red-700 block';
+                pesan.textContent = '❌ ' + err.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>Simpan Produk (POST)</span>';
+            }
+        });
+
+        // Panggil muatProduk() pertama kali saat halaman dibuka
+        window.addEventListener('DOMContentLoaded', muatProduk);
+    </script>
+</body>
+</html>
